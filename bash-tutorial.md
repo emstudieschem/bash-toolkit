@@ -138,3 +138,159 @@ To list which environment variables you have within the session:
 ~~~s
 env
 ~~~
+
+## Class 4: Basic Math
+
+Shells handle math differently than programming languages.
+
+Bash has the *evaluate expressions* command which is abreviated `expr`.
+
+~~~s
+expr 30 + 10
+expr 30 - 10
+expr 30 / 10
+expr 30 \* 10
+~~~
+
+`*` is a wildcard, so for multiplication you need to escape out the asterisk (`\*`).
+
+Math functions can be used with variables too.
+
+~~~s
+mynum1=100
+expr $mynum1 + 50
+
+mynum2=88
+expr $mynum1 - $mynum2
+~~~
+
+Can also use `$(())` for numeric calculations. It also allows for easier multiplication.
+
+~~~s
+echo $(($mynum1 + $mynum2))
+
+echo $(($mynum1 * 2))
+~~~
+
+
+## Class 5: If Statements
+
+An *if statement* begins with the word 'if' followed by some sort of test case (evaluates something).
+On the following line is *then* - what will happen if the condition is met (evaluates to True). The thing that happens is indented.
+The if statement is closed with *fi*.
+
+If Statements are the most useful when they use a condition that can change.
+
+~~~s
+mynum=200
+
+if [ $mynum -eq 200 ]
+then
+    echo "The condition is true."
+fi
+~~~
+
+`-eq`-is *equal*.
+The echo statement will only run if the condition is True.
+
+~~~s
+mynum=200
+
+if [ $mynum -eq 200 ]
+then
+    echo "The condition is true."
+else
+    echo "The variable does not equal 200."
+fi
+~~~
+
+~~~s
+mynum=200
+
+if [ ! $mynum -eq 200 ]
+...
+~~~
+
+The `!` reverses the check - so if $mynum is NOT equal to 200. But, it is better in this case to use `-ne` or 'not equal'.
+
+~~~s
+if [ $mynum -ne 200 ]
+...
+~~~
+
+Other examples:
+`-gt` : greater than
+`-ge` : greater than or equal to
+`-lt` : less than
+`-le` : less than or equal to
+
+
+### Check Existence of File
+
+~~~s
+if [ -f aboutme.sh ]
+then
+    echo "The file exists."
+else
+    echo "The file does not exist."
+fi
+~~~
+
+`-f` is a check for a file.
+
+### Which Command
+
+Linux has the `which` command - can find whether an application or binary command is present of the filesystem.
+
+~~~s
+which python
+> /c/Users/User/AppData/Local/miniconda3/python
+~~~
+
+It can be used in a script too.
+
+### Bash Script for Installing a Program If It Doesn't Exist
+
+~~~s
+#!/bin/bash
+
+command=/usr/bin/program
+
+if [ -f $command ]
+then
+    echo "$command is available, let's run it..."
+else
+    echo "$command is not available, installing it..."
+    sudo apt update && sudo apt install -y program
+fi
+
+$command
+~~~
+
+`sudo apt update` command - the apt makes it so the update doesn't update packages, but synchronize with the mirror (the repository)
+`&&` allows us to chain commands - if the *sudo apt update* is successful it will immediately run the second command
+`sudo apt install -y program` where *-y* assumes yes, so no prompt given (useful for automation)
+
+A better version of the script:
+
+~~~s
+#!/bin/bash
+
+command=htop
+
+if command -v $command
+then
+    echo "$command is available, let's run it..."
+else
+    echo "$command is not available, installing it..."
+    sudo apt update && sudo apt install -y $command
+fi
+
+$command
+~~~
+
+The brackets after the if statement have been removed. Brackets are only needed if running a test command. Instead we are using a normal command.
+`command -v` is a command that checks for the existence of a command.
+
+
+## Class 6: Exit Codes
