@@ -294,3 +294,115 @@ The brackets after the if statement have been removed. Brackets are only needed 
 
 
 ## Class 6: Exit Codes
+
+Exit codes allow us to determine whether the command was successful or not. 
+
+Bash represents success or failure using a variable that contains an exit code -- `$?`
+
+~~~s
+ls -l /etc
+
+echo $?
+> 0
+
+ls -l /misc
+
+echo $?
+> 2
+~~~
+
+`0`: success
+`1 - 125`: standard errors (general, file issues, permissions, etc.)
+`126 - 127`: shell-specific (command execution failures)
+`128 - 165`: signal-related exits
+`166 - 254`: user-defined (scripts/apps can use freely)
+`255`: reserved (out of range workflow)
+
+~~~s
+#!/bin/bash
+
+package=htop
+
+sudo apt install $package
+
+if [ $? -eq 0 ]
+then
+    echo "The installation of $package was successful."
+    echo "The new command is available here:"
+    which $package
+else
+    echo "$package failed to install."
+fi
+~~~
+
+`>>` is a redirect.
+
+~~~s
+#!/bin/bash
+
+package=htop
+
+sudo apt install $package >> package_install_results.log
+
+if [ $? -eq 0 ]
+then
+    echo "The installation of $package was successful."
+    echo "The new command is available here:"
+    which $package
+else
+    echo "$package failed to install." >> package_install_failure.log
+fi
+~~~
+
+The 'sudo apt install $package' output will not be printed in the terminal, and will just be found in the package_install_results.log
+'$package failed to install.' will not print in the terminal, but will be added to the package_install_failure.log
+
+~~~s
+directory=/etc
+
+if [ -d $directory ]
+then
+    echo "The directory $directory exists."
+else
+    echo "The directory $directory doesn't exist."
+fi
+
+echo "The exit code for this script is $?"
+~~~
+
+This doesn't work as intended, because the exit code is based on the echos being able to run, not if the directory exists.
+This is why testing is important!
+
+### Manipulating the Exit Code
+
+~~~s
+#!/bin/bash
+
+echo "Hello World"
+exit 1
+echo $?
+
+> Hello World
+~~~
+
+Does not output the $?, because `exit 0` will exit the script with whatever exit code is given (in this case 0). Nothing below the exit will be run, so the `echo $?` will never run.
+
+
+## Class 7: While Loops
+
+A *While Loop* allows us to continually do something until a particular condition is met.
+
+~~~s
+#!/bin/bash
+
+myvar=1
+
+while [ $myvar -le 10 ]
+do
+    echo $myvar
+    myvar=$(( $myvar +1 ))
+    sleep 0.5
+done
+~~~
+
+The script counts from 1 to 10 in +1 increments.
