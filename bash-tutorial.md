@@ -406,3 +406,61 @@ done
 ~~~
 
 The script counts from 1 to 10 in +1 increments.
+
+## Class 8: Update Script
+
+Creation of a *Universal Update Script*.
+This script will be updated over the course of the classes, so initially there will be some reducancies and issues.
+
+Two `if` statements that check for a directory, then acts accordingly.
+
+~~~s
+#!/bin/bash
+
+if [ -d /etc/pacman.d ]
+then
+    # The host is based on Arch, run the pacman update command
+    sudo pacman -Syu
+fi
+
+if [ -d /etc/apt ]
+then
+    # The host is based on Debian or Ubuntu,
+    # Run the apt version of the command
+    sudo apt update
+    sudo apt dist-upgrade
+fi
+~~~
+
+`sudo apt update` has the system check the repository server (catalogs the software that is available on that server) and refreshes its local index.
+
+Updating the file:
+
+~~~s
+#!/bin/bash
+
+release_file=/etc/os-release
+
+if grep -q "Arch" $release_file
+then
+    # The host is based on Arch, run the pacman update command
+    sudo pacman -Syu
+fi
+
+if grep -q "Ubuntu" $release_file || grep -q "Ubuntu" $release_file
+then
+    # The host is based on Debian or Ubuntu,
+    # Run the apt version of the command
+    sudo apt update
+    sudo apt dist-upgrade
+fi
+~~~
+
+`/etc/os-release` is a file that contains release/distribution information.
+`grep` is a standard linux command that searches text files specific strings/regular expressions
+`-q` means 'quiet mode' = won't print on screen.
+
+No brackets as we are not using the Test command, instead using a Linux command (however, Linux commands can be used as the conditions for a test command).
+
+`||` is a pipe which means *OR* = if either side evaluates to TRUE, then the check statment is also true, and the command can be run.
+`&&` = *AND* = both statements have to be TRUE
