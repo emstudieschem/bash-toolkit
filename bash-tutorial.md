@@ -464,3 +464,39 @@ No brackets as we are not using the Test command, instead using a Linux command 
 
 `||` is a pipe which means *OR* = if either side evaluates to TRUE, then the check statment is also true, and the command can be run.
 `&&` = *AND* = both statements have to be TRUE
+
+## Class 9: For Loops
+
+A `For Loop` allows you to perform a task repeatedly for every item in a set.
+An *if statement* performs a task once if a certain set of conditions evaluate to True, whereas a *for loop* performs a task or a set of tasks over and over until a particular state is reached.
+
+When the loop iterates over the final element in the set, the loop is done and it exits.
+
+~~~s
+#!/bin/bash
+
+for n in {1..10}
+do
+    echo $n
+    sleep 1
+done
+
+echo "This is outside of the for loop."
+~~~
+
+`{1..10}` = 1 2 3 4 5 6 7 8 9 10
+
+A more useful example, that will look through a directory and for every file that ends in `.log`, it will run a tar command to make a zipped file. The compressed file is called a *tarball*.
+
+~~~s
+#!/bin/bash
+
+for file in logfiles/*.log
+do
+    tar -czvf $file.tar.gz $file    # filename will be filename.log.tar.gz, then $file is the file to be compressed
+done
+~~~
+
+v = verbose
+
+This script can be used if we want to compress a large amount of files.
